@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RoleController;
@@ -31,6 +32,9 @@ Route::post('/login', [AuthController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
+
+    // --- Dashboard Summary ---
+    Route::get('/admin/dashboard-summary', [DashboardController::class, 'summary']);
 
     // --- User Profile & Logout ---
     Route::get('/profile', [AuthController::class, 'profile']);
