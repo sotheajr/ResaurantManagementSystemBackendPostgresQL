@@ -74,6 +74,7 @@ class CheckPermission
                             'PurchaseController' => 'purchases',
                             'PartnerController' => 'partners',
                             'AttendanceController' => 'attendances',
+                            'PayrollController' => 'payrolls',
                         ];
 
                         $tableName = $map[$controllerName] ?? null;

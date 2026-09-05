@@ -26,9 +26,9 @@ class UserRolePermissionSeeder extends Seeder
 
         // 2. Define all tables/resources and actions
         $resources = [
-            'users', 'roles', 'categories', 'sub_categories', 'menu', 'tables', 
-            'customers', 'orders', 'payments', 'reservations', 'reports', 
-            'inventory', 'suppliers', 'purchases', 'partners', 'attendances'
+            'users', 'roles', 'categories', 'sub_categories', 'menu', 'tables',
+            'customers', 'orders', 'payments', 'reservations', 'reports',
+            'inventory', 'suppliers', 'purchases', 'partners', 'attendances', 'payrolls'
         ];
 
         $actions = ['view', 'create', 'update', 'delete'];
@@ -98,6 +98,7 @@ class UserRolePermissionSeeder extends Seeder
                 'role_id' => 1,
                 'password' => Hash::make('admin123'),
                 'email' => 'admin@restaurant.com',
+                'salary' => 1200.00,
                 'status' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -108,6 +109,7 @@ class UserRolePermissionSeeder extends Seeder
                 'role_id' => 2,
                 'password' => Hash::make('admin123'),
                 'email' => 'waiter1@restaurant.com',
+                'salary' => 450.00,
                 'status' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -118,6 +120,7 @@ class UserRolePermissionSeeder extends Seeder
                 'role_id' => 3,
                 'password' => Hash::make('admin123'),
                 'email' => 'cashier1@restaurant.com',
+                'salary' => 400.00,
                 'status' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now(),

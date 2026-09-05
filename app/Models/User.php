@@ -11,6 +11,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $primaryKey = 'user_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'full_name',
         'username',
@@ -30,5 +34,13 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
+
+    /**
+     * All attendance records for this user.
+     */
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'user_id', 'user_id');
     }
 }

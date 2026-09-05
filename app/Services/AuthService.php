@@ -31,7 +31,7 @@ class AuthService
 
         return [
             'user' => [
-                'id' => $user->id,
+                'id' => $user->user_id,
                 'username' => $user->username,
                 'full_name' => $user->full_name,
                 'role' => $user->role->role_name ?? 'Waiter',
@@ -69,7 +69,7 @@ class AuthService
 
         return [
             'user' => [
-                'id' => $user->id,
+                'id' => $user->user_id,
                 'username' => $user->username,
                 'full_name' => $user->full_name,
                 'role' => $user->role->role_name ?? 'Waiter',
@@ -84,11 +84,11 @@ class AuthService
 
     public function getProfile($user)
     {
-        [$user, $permissions] = $this->userRepository->getProfileWithPermissions($user->id);
+        [$user, $permissions] = $this->userRepository->getProfileWithPermissions($user->user_id);
 
         return [
             'user' => [
-                'id' => $user->id,
+                'id' => $user->user_id,
                 'username' => $user->username,
                 'full_name' => $user->full_name,
                 'role' => $user->role->role_name ?? 'Waiter',
@@ -111,7 +111,7 @@ class AuthService
         }
 
         $path = $this->uploadImage($file, 'users');
-        return $this->userRepository->updateImage($user->id, $path);
+        return $this->userRepository->updateImage($user->user_id, $path);
     }
 
     public function logout($user)
