@@ -42,7 +42,8 @@ class InventoryController extends Controller
     public function store(StoreInventoryRequest $request)
     {
         try {
-            $item = $this->inventoryService->createInventory($request->validated());
+            $imageFile = $request->file('image');
+            $item = $this->inventoryService->createInventory($request->validated(), $imageFile);
             return $this->successResponse($item, 'Inventory item created successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
@@ -62,7 +63,8 @@ class InventoryController extends Controller
     public function update(UpdateInventoryRequest $request, $id)
     {
         try {
-            $item = $this->inventoryService->updateInventory((int) $id, $request->validated());
+            $imageFile = $request->file('image');
+            $item = $this->inventoryService->updateInventory((int) $id, $request->validated(), $imageFile);
             return $this->successResponse($item, 'Inventory item updated successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);

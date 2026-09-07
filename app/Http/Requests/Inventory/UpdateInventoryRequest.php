@@ -18,6 +18,7 @@ class UpdateInventoryRequest extends FormRequest
             'quantity' => 'nullable|numeric|min:0|decimal:0,2',
             'unit' => 'nullable|string|max:20',
             'minimum_stock' => 'nullable|numeric|min:0|decimal:0,2',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }
