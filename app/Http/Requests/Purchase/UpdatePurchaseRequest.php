@@ -17,10 +17,11 @@ class UpdatePurchaseRequest extends FormRequest
             'supplier_id' => 'sometimes|required|exists:suppliers,supplier_id',
             'purchase_date' => 'nullable|date',
             'total' => 'sometimes|required|numeric|min:0',
-            'items' => 'sometimes|required|array|min:1',
-            'items.*.inventory_id' => 'required|exists:inventory,inventory_id',
-            'items.*.quantity' => 'required|numeric|min:0',
-            'items.*.unit_price' => 'required|numeric|min:0',
+            'partner_id' => 'nullable|exists:partners,partner_id',
+            'items' => 'nullable|array',
+            'items.*.inventory_id' => 'required_with:items.*|exists:inventory,inventory_id',
+            'items.*.quantity' => 'required_with:items.*|numeric|min:0',
+            'items.*.unit_price' => 'required_with:items.*|numeric|min:0',
             'invoice_attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,pdf|max:5120',
         ];
     }
@@ -28,7 +29,6 @@ class UpdatePurchaseRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'items.required' => 'At least one purchase item is required.',
             'items.*.inventory_id.exists' => 'The selected inventory item does not exist.',
         ];
     }
