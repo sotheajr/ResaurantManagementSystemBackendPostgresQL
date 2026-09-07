@@ -18,6 +18,7 @@ class Purchase extends Model
         'supplier_id',
         'purchase_date',
         'total',
+        'partner_id',
         'invoice_attachment',
     ];
 
@@ -51,6 +52,11 @@ class Purchase extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 
     public function purchaseItems()

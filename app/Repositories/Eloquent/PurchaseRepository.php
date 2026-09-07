@@ -11,12 +11,12 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 {
     public function getAll()
     {
-        return Purchase::with('supplier', 'purchaseItems.inventory')->orderBy('purchase_date', 'desc')->get();
+        return Purchase::with('supplier', 'partner', 'purchaseItems.inventory')->orderBy('purchase_date', 'desc')->get();
     }
 
     public function findById(int $id)
     {
-        return Purchase::with('supplier', 'purchaseItems.inventory')->findOrFail($id);
+        return Purchase::with('supplier', 'partner', 'purchaseItems.inventory')->findOrFail($id);
     }
 
     public function create(array $data, array $items)
@@ -40,7 +40,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 $inventory->increment('quantity', $item['quantity']);
             }
 
-            return $purchase->load('supplier', 'purchaseItems.inventory');
+            return $purchase->load('supplier', 'partner', 'purchaseItems.inventory');
         });
     }
 
@@ -81,7 +81,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 $inventory->increment('quantity', $item['quantity']);
             }
 
-            return $purchase->load('supplier', 'purchaseItems.inventory');
+            return $purchase->load('supplier', 'partner', 'purchaseItems.inventory');
         });
     }
 

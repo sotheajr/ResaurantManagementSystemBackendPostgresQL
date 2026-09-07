@@ -39,7 +39,8 @@ class PurchaseController extends Controller
                 $items,
                 $invoiceFile
             );
-            return $this->successResponse($purchase, 'Purchase created successfully', 201);
+            // Load relationships for the response
+            return $this->successResponse($purchase->load(['supplier', 'partner']), 'Purchase created successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -66,7 +67,8 @@ class PurchaseController extends Controller
                 $items,
                 $invoiceFile
             );
-            return $this->successResponse($purchase, 'Purchase updated successfully');
+            // Load relationships for the response
+            return $this->successResponse($purchase->load(['supplier', 'partner']), 'Purchase updated successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
