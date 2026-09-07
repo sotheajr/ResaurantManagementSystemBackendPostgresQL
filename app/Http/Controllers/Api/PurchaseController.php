@@ -33,7 +33,8 @@ class PurchaseController extends Controller
     {
         try {
             $items = $request->validated()['items'] ?? $request->input('items', []);
-            $invoiceFile = $request->file('invoice_attachment');
+            // Check for file in multiple possible field names
+            $invoiceFile = $request->file('invoice_attachment') ?? $request->file('image') ?? $request->file('receipt_image');
             $purchase = $this->purchaseService->createPurchase(
                 collect($request->validated())->except(['items'])->toArray(),
                 $items,
@@ -60,7 +61,8 @@ class PurchaseController extends Controller
     {
         try {
             $items = $request->input('items', []);
-            $invoiceFile = $request->file('invoice_attachment');
+            // Check for file in multiple possible field names
+            $invoiceFile = $request->file('invoice_attachment') ?? $request->file('image') ?? $request->file('receipt_image');
             $purchase = $this->purchaseService->updatePurchase(
                 (int) $id,
                 collect($request->validated())->except(['items'])->toArray(),

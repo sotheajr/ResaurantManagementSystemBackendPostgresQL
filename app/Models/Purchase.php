@@ -20,6 +20,7 @@ class Purchase extends Model
         'total',
         'partner_id',
         'invoice_attachment',
+        'image',
     ];
 
     protected $appends = ['invoice_attachment_url'];
