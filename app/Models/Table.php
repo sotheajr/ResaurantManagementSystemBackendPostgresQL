@@ -24,7 +24,17 @@ class Table extends Model
 
     public function getImageUrlAttribute()
     {
-        return $this->image ? asset('storage/' . $this->image) : null;
+        if (!$this->image) {
+            return null;
+        }
+
+        // If the image is already an absolute URL (e.g., Cloudinary), return it directly
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        // Otherwise, it's a local storage path
+        return asset('storage/' . $this->image);
     }
 
     /**
