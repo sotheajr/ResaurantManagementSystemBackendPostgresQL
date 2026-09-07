@@ -17,6 +17,7 @@ class StoreSupplierRequest extends FormRequest
             'supplier_name' => 'required|string|max:100',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:200',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }

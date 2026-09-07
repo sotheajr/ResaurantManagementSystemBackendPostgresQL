@@ -33,9 +33,11 @@ class PurchaseController extends Controller
     {
         try {
             $items = $request->validated()['items'] ?? $request->input('items', []);
+            $invoiceFile = $request->file('invoice_attachment');
             $purchase = $this->purchaseService->createPurchase(
                 collect($request->validated())->except(['items'])->toArray(),
-                $items
+                $items,
+                $invoiceFile
             );
             return $this->successResponse($purchase, 'Purchase created successfully', 201);
         } catch (\Exception $e) {
@@ -57,10 +59,12 @@ class PurchaseController extends Controller
     {
         try {
             $items = $request->input('items', []);
+            $invoiceFile = $request->file('invoice_attachment');
             $purchase = $this->purchaseService->updatePurchase(
                 (int) $id,
                 collect($request->validated())->except(['items'])->toArray(),
-                $items
+                $items,
+                $invoiceFile
             );
             return $this->successResponse($purchase, 'Purchase updated successfully');
         } catch (\Exception $e) {

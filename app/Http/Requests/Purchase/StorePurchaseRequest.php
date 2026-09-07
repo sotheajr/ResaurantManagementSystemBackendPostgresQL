@@ -21,6 +21,7 @@ class StorePurchaseRequest extends FormRequest
             'items.*.inventory_id' => 'required|exists:inventory,inventory_id',
             'items.*.quantity' => 'required|numeric|min:0',
             'items.*.unit_price' => 'required|numeric|min:0',
+            'invoice_attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,pdf|max:5120',
         ];
     }
 

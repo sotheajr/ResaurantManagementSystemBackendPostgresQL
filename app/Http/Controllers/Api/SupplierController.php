@@ -32,7 +32,8 @@ class SupplierController extends Controller
     public function store(StoreSupplierRequest $request)
     {
         try {
-            $supplier = $this->supplierService->createSupplier($request->validated());
+            $logoFile = $request->file('logo');
+            $supplier = $this->supplierService->createSupplier($request->validated(), $logoFile);
             return $this->successResponse($supplier, 'Supplier created successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
@@ -52,7 +53,8 @@ class SupplierController extends Controller
     public function update(UpdateSupplierRequest $request, $id)
     {
         try {
-            $supplier = $this->supplierService->updateSupplier((int) $id, $request->validated());
+            $logoFile = $request->file('logo');
+            $supplier = $this->supplierService->updateSupplier((int) $id, $request->validated(), $logoFile);
             return $this->successResponse($supplier, 'Supplier updated successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
