@@ -18,6 +18,8 @@ use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
+    // --- Payments Module ---
+    // (Process/record payments and view paid transactions)
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::get('/payments/{reference}/receipt', [PaymentController::class, 'receipt']);
+    Route::get('/payments/{id}', [PaymentController::class, 'show']);
+    Route::post('/payments/process', [PaymentController::class, 'process']);
+
+    // --- ABA KHQR payment rail (TolaSaint) ---
+    Route::post('/payments/khqr/generate', [PaymentController::class, 'khqrGenerate']);
+    Route::get('/payments/khqr/status', [PaymentController::class, 'khqrStatus']);
+
+    // --- KHQR / ABA Bank gateway (TolaSaint) ---
+    Route::post('/create-payment', [PaymentController::class, 'createPayment']);
+    Route::get('/check-status', [PaymentController::class, 'checkStatus']);
+
+    // --- Stripe card payments (Visa / Mastercard) ---
+    Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
+    Route::post('/stripe/checkout-session', [StripeController::class, 'createCheckoutSession']);
+    Route::post('/stripe/confirm', [StripeController::class, 'confirm']);
 
     // --- Reservations Module ---
     // (View: Admin, Waiter, Cashier | Create/Update/Delete: Admin)

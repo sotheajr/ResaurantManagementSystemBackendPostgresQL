@@ -61,6 +61,22 @@ class Order extends Model
     }
 
     /**
+     * The payments recorded for this order.
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+
+    /**
+     * The most recent payment for this order.
+     */
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'order_id', 'id')->latestOfMany();
+    }
+
+    /**
      * Scope: Active orders (pending, preparing, ready)
      */
     public function scopeActive($query)
