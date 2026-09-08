@@ -32,6 +32,11 @@ class OrderController extends Controller
             $type = $request->query('type', 'history');
             $filters = $request->only(['start_date', 'end_date', 'search', 'status', 'payment_status', 'per_page']);
 
+            if ($type === 'completed' && empty($filters['status']) && empty($filters['payment_status'])) {
+                $filters['status'] = 'completed';
+                $filters['payment_status'] = 'unpaid';
+            }
+
             $orders = $this->orderService->getAllOrders($type, $filters);
             return $this->successResponse($orders);
         } catch (\Exception $e) {

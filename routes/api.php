@@ -82,6 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/payments/{reference}/receipt', [PaymentController::class, 'receipt']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
     Route::post('/payments/process', [PaymentController::class, 'process']);
+    Route::post('/payments/cash', [PaymentController::class, 'cash']);
 
     // --- ABA KHQR payment rail (TolaSaint) ---
     Route::post('/payments/khqr/generate', [PaymentController::class, 'khqrGenerate']);

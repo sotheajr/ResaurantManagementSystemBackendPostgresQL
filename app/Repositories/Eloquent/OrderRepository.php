@@ -19,6 +19,13 @@ class OrderRepository implements OrderRepositoryInterface
                 break;
             case 'completed':
                 $query->where('status', 'completed');
+
+                if (empty($filters['payment_status'])) {
+                    $query->where(function ($q) {
+                        $q->whereNull('payment_status')
+                          ->orWhereIn('payment_status', ['unpaid', 'pending']);
+                    });
+                }
                 break;
             case 'history':
             default:

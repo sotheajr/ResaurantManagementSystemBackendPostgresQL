@@ -81,6 +81,12 @@ class PaymentController extends Controller
                 return $this->errorResponse('order_id is required', 422);
             }
 
+            if (empty($data['payment_method'])) {
+                $data['payment_method'] = 'Cash';
+            } elseif (strtolower((string) $data['payment_method']) === 'cash') {
+                $data['payment_method'] = 'Cash';
+            }
+
             $payment = $this->paymentService->processPayment($data);
 
             return $this->successResponse($payment, 'Payment recorded successfully', 201);
@@ -229,6 +235,11 @@ class PaymentController extends Controller
      *
      * Returns: { id, qr_string, qr_link, amount, currency, status, expiry, reference }
      */
+    public function cash(Request $request)
+    {
+        return $this->process($request);
+    }
+
     public function khqrGenerate(Request $request)
     {
         try {
