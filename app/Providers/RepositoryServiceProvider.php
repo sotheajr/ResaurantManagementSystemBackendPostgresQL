@@ -31,6 +31,8 @@ use App\Repositories\Contracts\AttendanceRepositoryInterface;
 use App\Repositories\Eloquent\AttendanceRepository;
 use App\Repositories\Contracts\PayrollRepositoryInterface;
 use App\Repositories\Eloquent\PayrollRepository;
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\Eloquent\OrderRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -54,6 +56,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PartnerRepositoryInterface::class, PartnerRepository::class);
         $this->app->bind(AttendanceRepositoryInterface::class, AttendanceRepository::class);
         $this->app->bind(PayrollRepositoryInterface::class, PayrollRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
     }
 
     /**

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/customers', [CustomerController::class, 'index']);
     Route::get('/customers/{id}', [CustomerController::class, 'show']);
 
+    // --- Orders Module ---
+    // (View: Admin, Waiter, Cashier | Create/Update/Delete: Admin)
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
     // --- Reservations Module ---
     // (View: Admin, Waiter, Cashier | Create/Update/Delete: Admin)
     Route::get('/reservations', [ReservationController::class, 'index']);
@@ -113,6 +120,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/reservations', [ReservationController::class, 'store']);
         Route::put('/reservations/{id}', [ReservationController::class, 'update']);
         Route::delete('/reservations/{id}', [ReservationController::class, 'destroy']);
+
+        // Order CUD routes (Admin only via CheckPermission middleware)
+        Route::post('/orders', [OrderController::class, 'store']);
+        Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
     });
 
         // --- Inventory, Suppliers & Purchases Modules ---
