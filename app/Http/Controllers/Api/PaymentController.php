@@ -259,19 +259,26 @@ class PaymentController extends Controller
                 return $this->errorResponse('Order payment already paid', 422);
             }
 
-            $apiKey = env('TOLA_SAINT_API_KEY', config('tolasaint.api_key'));
+            $apiKey = config('services.tolasaint.api_key') ?? env('TOLASAINT_API_KEY');
+            $apiUrl = config('services.tolasaint.api_url') ?? 'https://api.tolasaint.com/v1/payment';
+            $provider = config('services.tolasaint.provider') ?? 'aba';
+
             $payload = [
                 'amount' => number_format((float) $order->total_amount, 2, '.', ''),
                 'currency' => 'USD',
-                'provider' => env('TOLA_SAINT_PROVIDER', config('tolasaint.provider', 'aba')),
+                'provider' => $provider,
                 'reference' => 'order-' . $order->id,
             ];
 
             $response = Http::withHeaders([
-                'x-api-key' => $apiKey,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])->post('https://api.tolasaint.com/v1/payment', $payload);
+                'x-api-key' => trim($apiKey),
+                'content-type' => 'application/json',
+            ])->post($apiUrl, [
+                'amount' => number_format((float) $order->total_amount, 2, '.', ''),
+                'currency' => 'USD',
+                'provider' => $provider,
+                'reference' => 'order-' . $order->id . '-' . time(),
+            ]);
 
             $body = $response->json() ?? [];
             if ($response->failed()) {
@@ -334,10 +341,13 @@ class PaymentController extends Controller
                 return $this->errorResponse('id (TolaSaint payment id) is required', 422);
             }
 
+            $apiKey = config('services.tolasaint.api_key') ?? env('TOLASAINT_API_KEY');
+            $statusUrl = config('services.tolasaint.status_url') ?? 'https://api.tolasaint.com/v1/payment/status';
+
             $response = Http::withHeaders([
-                'x-api-key' => env('TOLA_SAINT_API_KEY', config('tolasaint.api_key')),
-                'Accept' => 'application/json',
-            ])->get('https://api.tolasaint.com/v1/payment/status', ['id' => $id]);
+                'x-api-key' => trim($apiKey),
+                'content-type' => 'application/json',
+            ])->get($statusUrl, ['id' => $id]);
 
             $body = $response->json() ?? [];
             if ($response->failed()) {

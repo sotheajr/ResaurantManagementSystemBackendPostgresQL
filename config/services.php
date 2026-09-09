@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'tolasaint' => [
+        'api_key' => env('TOLASAINT_API_KEY'),
+        'api_url' => env('TOLASAINT_API_URL', 'https://api.tolasaint.com/v1/payment'),
+        'status_url' => env('TOLASAINT_STATUS_URL', 'https://api.tolasaint.com/v1/payment/status'),
+        'provider' => env('TOLASAINT_PROVIDER', 'aba'),
+    ],
+
 ];

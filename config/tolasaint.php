@@ -13,7 +13,7 @@ return [
 
     // API key sent as the `x-api-key` header on every request.
 
-    'api_key' => env('TOLA_SAINT_API_KEY', env('TOLASAINT_API_KEY')),
+    'api_key' => env('TOLASAINT_API_KEY', env('TOLA_SAINT_API_KEY')),
 
     // Endpoint used to create a new payment / generate the KHQR code.
     'api_url' => env('TOLASAINT_API_URL', env('TOLA_SAINT_API_URL', 'https://api.tolasaint.com/v1/payment')),
