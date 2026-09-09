@@ -62,6 +62,7 @@ class OrderController extends Controller
             $data = $request->only(['table_id', 'customer_id', 'waiter_id', 'notes']);
             $data['user_id'] = $request->input('user_id', auth()->id());
             $data['waiter_id'] = $request->input('waiter_id') ?? $request->input('waiterId');
+            $data['payment_status'] = 'unpaid';
             $items = $request->input('items', []);
 
             $order = $this->orderService->createOrder($data, $items);

@@ -18,18 +18,17 @@ class OrderRepository implements OrderRepositoryInterface
                 $query->whereIn('status', ['pending', 'preparing', 'ready']);
                 break;
             case 'completed':
-                $query->whereIn('status', ['completed', 'served']);
-
-                if (empty($filters['payment_status'])) {
-                    $query->where(function ($q) {
-                        $q->whereNull('payment_status')
-                          ->orWhereIn('payment_status', ['unpaid', 'pending']);
-                    });
-                }
+                $query->where(function ($q) {
+                    $q->whereIn('status', ['completed', 'served'])
+                      ->where('payment_status', 'unpaid');
+                });
                 break;
             case 'history':
             default:
-                // All statuses - paginated
+                $query->where(function ($q) {
+                    $q->where('payment_status', 'paid')
+                      ->orWhere('status', 'cancelled');
+                });
                 break;
         }
 
