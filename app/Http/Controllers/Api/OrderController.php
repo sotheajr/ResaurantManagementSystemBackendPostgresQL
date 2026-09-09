@@ -59,11 +59,17 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
         try {
+            $authenticatedUserId = auth()->id() ?? auth('sanctum')->id();
             $data = $request->only(['table_id', 'customer_id', 'waiter_id', 'notes']);
-            $data['user_id'] = $request->input('user_id', auth()->id());
+            $data['user_id'] = $request->input('user_id', $authenticatedUserId);
+            $data['created_by'] = $request->input('created_by', $authenticatedUserId ?? $data['user_id']);
             $data['waiter_id'] = $request->input('waiter_id') ?? $request->input('waiterId');
             $data['payment_status'] = 'unpaid';
             $items = $request->input('items', []);
+
+            if (empty($data['created_by'])) {
+                return $this->errorResponse('Authenticated staff user is required to create an order.', 401);
+            }
 
             $order = $this->orderService->createOrder($data, $items);
             return $this->successResponse($order, 'Order created successfully', 201);

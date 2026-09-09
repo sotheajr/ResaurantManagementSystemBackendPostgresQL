@@ -16,6 +16,7 @@ class Order extends Model
         'table_id',
         'customer_id',
         'user_id',
+        'created_by',
         'waiter_id',
         'total_amount',
         'status',
@@ -51,7 +52,7 @@ class Order extends Model
      */
     public function creator()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'created_by', 'user_id');
     }
 
     /**
