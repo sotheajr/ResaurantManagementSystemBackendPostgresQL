@@ -126,14 +126,20 @@ class OrderRepository implements OrderRepositoryInterface
     {
         return DB::transaction(function () use ($id, $status) {
             $order = Order::findOrFail($id);
-            $order->status = $status;
+            $normalized = strtolower(trim((string) $status));
+            $allowed = ['pending', 'preparing', 'ready', 'completed', 'cancelled'];
 
-            // Automatically mark payment_status as 'paid' when status is 'completed'
-            if ($status === 'completed') {
-                $order->payment_status = 'paid';
+            if (!in_array($normalized, $allowed, true)) {
+                throw new \InvalidArgumentException('Invalid order status. Only pending, preparing, ready, completed, and cancelled are allowed.');
             }
 
+            if ($normalized === 'paid' || strtolower((string) ($order->payment_status ?? '')) === 'paid' && $normalized === 'completed') {
+                throw new \InvalidArgumentException('Payment completion must happen through the checkout/payment flow.');
+            }
+
+            $order->status = $normalized;
             $order->save();
+
             return $order->load(['table', 'customer', 'user', 'items.menuItem']);
         });
     }

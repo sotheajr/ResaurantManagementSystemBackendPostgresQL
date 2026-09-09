@@ -56,9 +56,12 @@ class PaymentService
                 ? (float) $data['amount']
                 : (float) $order->total_amount;
 
+            $cashierId = $data['cashier_id'] ?? null;
+
             $payment = Payment::create([
                 'order_id' => $order->id,
-                'cashier_id' => $data['cashier_id'] ?? null,
+                'cashier_id' => $cashierId,
+                'checkout_by' => $cashierId,
                 'payment_method' => $data['payment_method'] ?? 'Cash',
                 'transaction_id' => $data['transaction_id'] ?? null,
                 'external_payment_id' => $data['external_payment_id'] ?? null,
@@ -71,6 +74,7 @@ class PaymentService
 
             // Finalize the order: mark paid and completed (unless cancelled).
             $order->payment_status = 'paid';
+            $order->checkout_by = $cashierId;
             if (strtolower((string) $order->status) !== 'cancelled') {
                 $order->status = 'completed';
             }
@@ -130,6 +134,8 @@ class PaymentService
         }
 
         return DB::transaction(function () use ($order, $gateway, $existing) {
+            $cashierId = $gateway['cashier_id'] ?? $existing?->cashier_id ?? null;
+
             $payment = $existing ?: new Payment([
                 'order_id' => $order->id,
                 'payment_method' => $gateway['payment_method'] ?? 'ABA Bank',
@@ -141,7 +147,8 @@ class PaymentService
             $payment->payment_status = 'paid';
             $payment->transaction_id = $payment->transaction_id ?? ($gateway['transaction_id'] ?? null);
             $payment->external_payment_id = $payment->external_payment_id ?? ($gateway['external_payment_id'] ?? null);
-            $payment->cashier_id = $payment->cashier_id ?? ($gateway['cashier_id'] ?? null);
+            $payment->cashier_id = $payment->cashier_id ?? $cashierId;
+            $payment->checkout_by = $payment->checkout_by ?? $cashierId;
             $payment->amount = (float) ($gateway['amount'] ?? $payment->amount ?? $order->total_amount);
             $payment->currency = $payment->currency ?: 'USD';
             $payment->payment_method = $gateway['payment_method'] ?? $payment->payment_method ?? 'ABA Bank';
@@ -149,6 +156,7 @@ class PaymentService
             $payment->save();
 
             $order->payment_status = 'paid';
+            $order->checkout_by = $order->checkout_by ?? $cashierId;
             if (strtolower((string) $order->status) !== 'cancelled') {
                 $order->status = 'completed';
             }

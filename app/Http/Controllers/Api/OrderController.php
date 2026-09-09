@@ -90,8 +90,16 @@ class OrderController extends Controller
     {
         try {
             $status = $request->input('status');
+            $paymentStatus = strtolower((string) $request->input('payment_status', ''));
+
+            if ($paymentStatus === 'paid' || strtolower((string) $status) === 'paid' || strtolower((string) $status) === 'Paid') {
+                return $this->errorResponse('Payment completion must happen through the checkout/payment flow. Manual status changes to paid are not allowed.', 422);
+            }
+
             $order = $this->orderService->updateOrderStatus((int) $id, $status);
             return $this->successResponse($order, 'Order status updated successfully');
+        } catch (\InvalidArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), 422);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
