@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Dashboard Summary ---
     Route::get('/admin/dashboard-summary', [DashboardController::class, 'summary']);
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
     // --- User Profile & Logout ---
     Route::get('/profile', [AuthController::class, 'profile']);
