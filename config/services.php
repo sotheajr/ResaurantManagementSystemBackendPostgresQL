@@ -42,4 +42,9 @@ return [
         'provider' => env('TOLASAINT_PROVIDER', 'aba'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_TEST_PK') ?? env('STRIPE_KEY') ?? env('STRIPE_PUBLISHABLE_KEY'),
+        'secret' => env('STRIPE_TEST_SK') ?? env('STRIPE_SECRET') ?? env('STRIPE_SECRET_KEY'),
+    ],
+
 ];

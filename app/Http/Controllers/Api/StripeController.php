@@ -29,13 +29,14 @@ class StripeController extends Controller
      */
     public function config()
     {
-        $publishableKey = config('stripe.key')
-            ?? config('services.stripe.key')
+        $publishableKey = config('services.stripe.key')
+            ?? config('stripe.key')
+            ?? env('STRIPE_TEST_PK')
             ?? env('STRIPE_KEY')
-            ?? env('STRIPE_PUBLISHABLE_KEY')
-            ?? env('STRIPE_TEST_PK');
+            ?? env('STRIPE_PUBLISHABLE_KEY');
 
         return response()->json([
+            'success' => true,
             'publishableKey' => $publishableKey,
             'key' => $publishableKey,
             'publishable_key' => $publishableKey,
@@ -52,13 +53,14 @@ class StripeController extends Controller
                 'email' => $request->input('email'),
             ]);
 
-            $publishableKey = config('stripe.key')
-                ?? config('services.stripe.key')
+            $publishableKey = config('services.stripe.key')
+                ?? config('stripe.key')
+                ?? env('STRIPE_TEST_PK')
                 ?? env('STRIPE_KEY')
-                ?? env('STRIPE_PUBLISHABLE_KEY')
-                ?? env('STRIPE_TEST_PK');
+                ?? env('STRIPE_PUBLISHABLE_KEY');
 
             return $this->successResponse([
+                'success' => true,
                 'publishableKey' => $publishableKey,
                 'key' => $publishableKey,
                 'publishable_key' => $publishableKey,
