@@ -120,7 +120,8 @@ class DashboardController extends Controller
                 $orders = (int) Order::whereBetween('created_at', [$bucketStart, $bucketEnd])->count();
 
                 $points[] = [
-                    'label' => $bucketStart->format('H:i'),
+                    'label' => $bucketStart->format('D hA'),
+                    'date' => $bucketStart->format('M d'),
                     'sales' => $sales,
                     'orders' => $orders,
                 ];
@@ -156,6 +157,7 @@ class DashboardController extends Controller
 
             $points[] = [
                 'label' => $label,
+                'date' => $bucketStart->format('M d'),
                 'sales' => $sales,
                 'orders' => $orders,
             ];

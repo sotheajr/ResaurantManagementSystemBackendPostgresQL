@@ -85,6 +85,11 @@ class AuthService
     public function getProfile($user)
     {
         [$user, $permissions] = $this->userRepository->getProfileWithPermissions($user->user_id);
+        $image = $user->image;
+
+        if ($image && !str_starts_with($image, 'http')) {
+            $image = 'storage/' . $image;
+        }
 
         return [
             'user' => [
@@ -98,7 +103,7 @@ class AuthService
                 'salary' => $user->salary,
                 'hire_date' => $user->hire_date,
                 'status' => $user->status,
-                'image' => $user->image ? 'storage/' . $user->image : null,
+                'image' => $image,
             ],
             'permissions' => $permissions,
         ];

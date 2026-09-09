@@ -42,7 +42,13 @@ class AuthController extends Controller
     public function updateImage(UpdateProfileImageRequest $request)
     {
         $user = $this->authService->updateProfileImage($request->user(), $request->file('image'));
-        return $this->successResponse(['image' => 'storage/' . $user->image], 'Profile image updated successfully');
+        $image = $user->image;
+
+        if ($image && !str_starts_with($image, 'http')) {
+            $image = 'storage/' . $image;
+        }
+
+        return $this->successResponse(['image' => $image], 'Profile image updated successfully');
     }
 
     public function logout(Request $request)
