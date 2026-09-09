@@ -71,6 +71,8 @@ class AuthLoginTest extends TestCase
                     'range',
                     'summary',
                     'chart',
+                    'current_month_weeks',
+                    'previous_month_weeks',
                     'paymentMethods',
                     'topItems',
                     'tableStatus',

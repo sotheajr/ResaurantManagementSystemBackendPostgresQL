@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\User;
 use App\Models\RolePermission;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use Illuminate\Support\Facades\Schema;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -33,8 +34,18 @@ class UserRepository implements UserRepositoryInterface
     public function updateImage(int $userId, string $imagePath)
     {
         $user = User::findOrFail($userId);
-        $user->update(['image' => $imagePath]);
-        return $user;
+        $payload = ['image' => $imagePath];
+
+        if (Schema::hasColumn('users', 'avatar')) {
+            $payload['avatar'] = $imagePath;
+        }
+
+        if (Schema::hasColumn('users', 'profile_image')) {
+            $payload['profile_image'] = $imagePath;
+        }
+
+        $user->update($payload);
+        return $user->fresh();
     }
 
     public function getAllWithRoles()

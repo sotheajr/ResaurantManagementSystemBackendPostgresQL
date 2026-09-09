@@ -9,6 +9,7 @@ use App\Http\Requests\Profile\UpdateProfileImageRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class AuthController extends Controller
 {
@@ -41,14 +42,46 @@ class AuthController extends Controller
 
     public function updateImage(UpdateProfileImageRequest $request)
     {
-        $user = $this->authService->updateProfileImage($request->user(), $request->file('image'));
-        $image = $user->image;
+        $file = $request->file('image') ?? $request->file('avatar') ?? $request->file('profile_image');
+        $user = $request->user();
 
-        if ($image && !str_starts_with($image, 'http')) {
-            $image = 'storage/' . $image;
+        if (!$file) {
+            return $this->errorResponse('Profile image file is required.', 422);
         }
 
-        return $this->successResponse(['image' => $image], 'Profile image updated successfully');
+        $uploadedUser = $this->authService->updateProfileImage($user, $file);
+
+        $imageUrl = $uploadedUser->image ?? $uploadedUser->avatar ?? $uploadedUser->profile_image ?? null;
+        if ($imageUrl && !str_starts_with($imageUrl, 'http')) {
+            $imageUrl = 'storage/' . $imageUrl;
+        }
+
+        $user->refresh();
+        if (Schema::hasColumn('users', 'avatar')) {
+            $user->avatar = $imageUrl;
+        }
+        if (Schema::hasColumn('users', 'profile_image')) {
+            $user->profile_image = $imageUrl;
+        }
+        $user->image = $imageUrl;
+        $user->save();
+
+        $payload = [
+            'avatar' => $imageUrl,
+            'avatar_url' => $imageUrl,
+            'image' => $imageUrl,
+            'user' => $user->fresh(),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile image updated successfully',
+            'data' => $payload,
+            'avatar' => $imageUrl,
+            'avatar_url' => $imageUrl,
+            'image' => $imageUrl,
+            'user' => $user->fresh(),
+        ], 200);
     }
 
     public function logout(Request $request)

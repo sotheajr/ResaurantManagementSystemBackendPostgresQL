@@ -80,11 +80,14 @@ class DashboardController extends Controller
             $topItems = $this->buildTopItems($start, $end);
             $tableStatus = $this->buildTableStatusBreakdown();
             $recentOrders = $this->buildRecentOrders();
+            $weeklyRevenue = $this->buildMonthlyWeeklyRevenueComparison();
 
             return $this->successResponse([
                 'range' => $range,
                 'summary' => $summary,
                 'chart' => $chart,
+                'current_month_weeks' => $weeklyRevenue['current_month_weeks'],
+                'previous_month_weeks' => $weeklyRevenue['previous_month_weeks'],
                 'paymentMethods' => $paymentMethods,
                 'topItems' => $topItems,
                 'tableStatus' => $tableStatus,
@@ -240,6 +243,37 @@ class DashboardController extends Controller
                 ];
             })
             ->toArray();
+    }
+
+    private function buildMonthlyWeeklyRevenueComparison(): array
+    {
+        $currentMonthStart = Carbon::now()->copy()->startOfMonth();
+        $previousMonthStart = Carbon::now()->copy()->subMonth()->startOfMonth();
+
+        return [
+            'current_month_weeks' => $this->buildWeeklyRevenueForMonth($currentMonthStart),
+            'previous_month_weeks' => $this->buildWeeklyRevenueForMonth($previousMonthStart),
+        ];
+    }
+
+    private function buildWeeklyRevenueForMonth(Carbon $monthStart): array
+    {
+        $monthEnd = $monthStart->copy()->endOfMonth();
+        $weeks = [0, 0, 0, 0];
+
+        $payments = Payment::whereBetween('created_at', [$monthStart, $monthEnd])->get();
+
+        foreach ($payments as $payment) {
+            if (empty($payment->created_at)) {
+                continue;
+            }
+
+            $dayOfMonth = Carbon::parse($payment->created_at)->day;
+            $weekIndex = min(3, (int) floor(($dayOfMonth - 1) / 7));
+            $weeks[$weekIndex] += (float) ($payment->amount ?? 0);
+        }
+
+        return array_map(fn ($value) => round((float) $value, 2), $weeks);
     }
 
     private function getTableOccupancyPercent(): float
