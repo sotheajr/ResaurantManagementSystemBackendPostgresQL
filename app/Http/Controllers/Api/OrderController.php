@@ -29,7 +29,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $type = $request->query('type', 'history');
+            $type = strtolower((string) $request->query('type', 'history'));
             $filters = $request->only(['start_date', 'end_date', 'search', 'status', 'payment_status', 'per_page']);
 
             if ($type === 'completed' && empty($filters['status']) && empty($filters['payment_status'])) {
@@ -42,6 +42,12 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
+    }
+
+    public function completed(Request $request)
+    {
+        $request->merge(['type' => 'completed']);
+        return $this->index($request);
     }
 
     /**

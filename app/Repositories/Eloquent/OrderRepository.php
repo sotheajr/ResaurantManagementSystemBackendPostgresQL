@@ -11,14 +11,14 @@ class OrderRepository implements OrderRepositoryInterface
 {
     public function getAll(string $type = 'history', array $filters = [])
     {
-        $query = Order::with(['table', 'customer', 'user', 'items.menuItem']);
+        $query = Order::with(['table', 'customer', 'user', 'items.menuItem', 'payment.cashier']);
 
         switch ($type) {
             case 'active':
                 $query->whereIn('status', ['pending', 'preparing', 'ready']);
                 break;
             case 'completed':
-                $query->where('status', 'completed');
+                $query->whereIn('status', ['completed', 'served']);
 
                 if (empty($filters['payment_status'])) {
                     $query->where(function ($q) {
@@ -78,7 +78,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function findById(int $id)
     {
-        return Order::with(['table', 'customer', 'user', 'items.menuItem'])->findOrFail($id);
+        return Order::with(['table', 'customer', 'user', 'items.menuItem', 'payment.cashier'])->findOrFail($id);
     }
 
     public function create(array $data, array $items = [])

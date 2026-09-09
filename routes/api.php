@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Orders Module ---
     // (View: Admin, Waiter, Cashier | Create/Update/Delete: Admin)
     Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/completed', [OrderController::class, 'completed']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
