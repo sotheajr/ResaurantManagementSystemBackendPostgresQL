@@ -77,6 +77,10 @@ class PaymentController extends Controller
                 'external_payment_id',
             ]);
 
+            $authenticatedUserId = auth()->id();
+            $data['cashier_id'] = $data['cashier_id'] ?? $authenticatedUserId;
+            $data['checkout_by'] = $data['checkout_by'] ?? $authenticatedUserId;
+
             if (empty($data['order_id'])) {
                 return $this->errorResponse('order_id is required', 422);
             }

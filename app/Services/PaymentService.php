@@ -56,12 +56,13 @@ class PaymentService
                 ? (float) $data['amount']
                 : (float) $order->total_amount;
 
-            $cashierId = $data['cashier_id'] ?? null;
+            $cashierId = $data['cashier_id'] ?? auth()->id();
+            $checkoutBy = $data['checkout_by'] ?? $cashierId;
 
             $payment = Payment::create([
                 'order_id' => $order->id,
                 'cashier_id' => $cashierId,
-                'checkout_by' => $cashierId,
+                'checkout_by' => $checkoutBy,
                 'payment_method' => $data['payment_method'] ?? 'Cash',
                 'transaction_id' => $data['transaction_id'] ?? null,
                 'external_payment_id' => $data['external_payment_id'] ?? null,
@@ -74,7 +75,7 @@ class PaymentService
 
             // Finalize the order: mark paid and completed (unless cancelled).
             $order->payment_status = 'paid';
-            $order->checkout_by = $cashierId;
+            $order->checkout_by = $checkoutBy;
             if (strtolower((string) $order->status) !== 'cancelled') {
                 $order->status = 'completed';
             }

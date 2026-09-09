@@ -66,6 +66,14 @@ class Payment extends Model
     }
 
     /**
+     * The cashier who completed the checkout.
+     */
+    public function checkoutUser()
+    {
+        return $this->belongsTo(User::class, 'checkout_by', 'user_id');
+    }
+
+    /**
      * Scope: paid payments only.
      */
     public function scopePaid($query)
