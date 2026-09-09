@@ -45,49 +45,15 @@ class StripePaymentService
     }
 
     /**
-     * Create an embedded Checkout Session and return the normalized payload.
+     * Backward-compatible alias for the card-modal flow.
      *
-     * @param  array{amount: float, currency?: string, order_id?: mixed, email?: string}  $params
-     * @return array{client_secret: string, clientSecret: string, id: string, amount: float, currency: string}
+     * Stripe PaymentElement requires a PaymentIntent client secret (pi_..._secret_...),
+     * not a Checkout Session client secret (cs_...). This method therefore returns
+     * the same normalized PaymentIntent payload as createPaymentIntent().
      */
     public function createCheckoutSession(array $params): array
     {
-        $amount = round((float) ($params['amount'] ?? 0), 2);
-        $currency = strtolower($params['currency'] ?? 'usd');
-        $frontendBaseUrl = rtrim((string) config('app.frontend_url', env('FRONTEND_URL', 'http://localhost:3000')), '/');
-        $orderId = (string) ($params['order_id'] ?? '');
-        $successUrl = $frontendBaseUrl . '/admin/payments/success?order_id=' . urlencode($orderId) . '&session_id={CHECKOUT_SESSION_ID}';
-
-        $form = [
-            'mode' => 'payment',
-            'ui_mode' => 'embedded',
-            'currency' => $currency,
-            'line_items[0][quantity]' => 1,
-            'line_items[0][price_data][currency]' => $currency,
-            'line_items[0][price_data][unit_amount]' => (int) round($amount * 100),
-            'line_items[0][price_data][product_data][name]' => 'Restaurant order #' . $orderId,
-            'payment_intent_data[metadata][order_id]' => $orderId,
-            'return_url' => $successUrl,
-        ];
-
-        if (!empty($params['email'])) {
-            $form['payment_intent_data[receipt_email]'] = $params['email'];
-        }
-
-        $response = $this->client()->asForm()->post($this->url('checkout/sessions'), $form);
-        $body = $response->json() ?? [];
-
-        if ($response->failed()) {
-            throw new \RuntimeException($body['error']['message'] ?? ('Stripe API error (HTTP ' . $response->status() . ')'));
-        }
-
-        return [
-            'client_secret' => $body['client_secret'] ?? null,
-            'clientSecret' => $body['client_secret'] ?? null,
-            'id' => $body['id'] ?? null,
-            'amount' => $amount,
-            'currency' => $currency,
-        ];
+        return $this->createPaymentIntent($params);
     }
 
     /**

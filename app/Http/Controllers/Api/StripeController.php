@@ -52,14 +52,14 @@ class StripeController extends Controller
     public function createCheckoutSession(Request $request)
     {
         try {
-            $session = $this->stripeService->createCheckoutSession([
+            $intent = $this->stripeService->createPaymentIntent([
                 'amount' => $request->input('total_amount') ?? $request->input('amount'),
                 'currency' => $request->input('currency', 'usd'),
                 'order_id' => $request->input('order_id'),
                 'email' => $request->input('email'),
             ]);
 
-            return $this->successResponse($session);
+            return $this->successResponse($intent);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 502);
         }
