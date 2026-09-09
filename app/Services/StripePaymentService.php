@@ -67,7 +67,6 @@ class StripePaymentService
             'line_items[0][price_data][product_data][name]' => 'Restaurant order #' . ($params['order_id'] ?? ''),
             'payment_intent_data[metadata][order_id]' => (string) ($params['order_id'] ?? ''),
             'return_url' => $successUrl,
-            'redirect_on_completion' => 'never',
         ];
 
         if (!empty($params['email'])) {

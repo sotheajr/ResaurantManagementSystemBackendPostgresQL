@@ -29,7 +29,7 @@ class StripeCheckoutSessionTest extends TestCase
             $body = $request->data();
 
             return isset($body['return_url'])
-                || (isset($body['redirect_on_completion']) && $body['redirect_on_completion'] === 'never');
+                && $body['ui_mode'] === 'embedded';
         });
     }
 }
