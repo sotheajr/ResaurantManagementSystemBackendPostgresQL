@@ -59,7 +59,9 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
         try {
-            $data = $request->only(['table_id', 'customer_id', 'user_id', 'notes']);
+            $data = $request->only(['table_id', 'customer_id', 'waiter_id', 'notes']);
+            $data['user_id'] = $request->input('user_id', auth()->id());
+            $data['waiter_id'] = $request->input('waiter_id') ?? $request->input('waiterId');
             $items = $request->input('items', []);
 
             $order = $this->orderService->createOrder($data, $items);

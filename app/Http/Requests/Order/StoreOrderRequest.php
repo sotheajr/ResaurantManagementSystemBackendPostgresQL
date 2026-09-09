@@ -17,6 +17,7 @@ class StoreOrderRequest extends FormRequest
             'table_id' => 'nullable|exists:tables,id',
             'customer_id' => 'nullable|exists:customers,id',
             'user_id' => 'nullable|exists:users,user_id',
+            'waiter_id' => 'nullable|exists:users,user_id',
             'notes' => 'nullable|string|max:1000',
             'items' => 'required|array|min:1',
             'items.*.menu_item_id' => 'required|exists:menu_items,id',

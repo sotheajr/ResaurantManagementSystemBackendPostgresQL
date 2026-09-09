@@ -11,7 +11,7 @@ class OrderRepository implements OrderRepositoryInterface
 {
     public function getAll(string $type = 'history', array $filters = [])
     {
-        $query = Order::with(['table', 'customer', 'user', 'items.menuItem', 'payment.cashier']);
+        $query = Order::with(['table', 'customer', 'waiter', 'creator', 'checkoutUser', 'items.menuItem', 'payment.cashier']);
 
         switch ($type) {
             case 'active':
@@ -78,7 +78,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function findById(int $id)
     {
-        return Order::with(['table', 'customer', 'user', 'items.menuItem', 'payment.cashier'])->findOrFail($id);
+        return Order::with(['table', 'customer', 'waiter', 'creator', 'checkoutUser', 'items.menuItem', 'payment.cashier'])->findOrFail($id);
     }
 
     public function create(array $data, array $items = [])
@@ -109,7 +109,7 @@ class OrderRepository implements OrderRepositoryInterface
             $order->total_amount = $totalAmount;
             $order->save();
 
-            return $order->load(['table', 'customer', 'user', 'items.menuItem']);
+            return $order->load(['table', 'customer', 'waiter', 'creator', 'checkoutUser', 'items.menuItem']);
         });
     }
 
@@ -118,7 +118,7 @@ class OrderRepository implements OrderRepositoryInterface
         return DB::transaction(function () use ($id, $data) {
             $order = Order::findOrFail($id);
             $order->update($data);
-            return $order->load(['table', 'customer', 'user', 'items.menuItem']);
+            return $order->load(['table', 'customer', 'waiter', 'creator', 'checkoutUser', 'items.menuItem']);
         });
     }
 
@@ -140,7 +140,7 @@ class OrderRepository implements OrderRepositoryInterface
             $order->status = $normalized;
             $order->save();
 
-            return $order->load(['table', 'customer', 'user', 'items.menuItem']);
+            return $order->load(['table', 'customer', 'waiter', 'creator', 'checkoutUser', 'items.menuItem']);
         });
     }
 

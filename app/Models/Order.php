@@ -16,6 +16,7 @@ class Order extends Model
         'table_id',
         'customer_id',
         'user_id',
+        'waiter_id',
         'total_amount',
         'status',
         'payment_status',
@@ -46,11 +47,35 @@ class Order extends Model
     }
 
     /**
-     * The user (waiter/cashier) who created this order.
+     * The user who created / keyed in this order.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * The assigned waiter for this order.
+     */
+    public function waiter()
+    {
+        return $this->belongsTo(User::class, 'waiter_id', 'user_id');
+    }
+
+    /**
+     * Backward-compatible alias for creator.
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->creator();
+    }
+
+    /**
+     * The cashier who completed the checkout for this order.
+     */
+    public function checkoutUser()
+    {
+        return $this->belongsTo(User::class, 'checkout_by', 'user_id');
     }
 
     /**
