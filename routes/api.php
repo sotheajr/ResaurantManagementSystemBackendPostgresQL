@@ -94,6 +94,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/check-status', [PaymentController::class, 'checkStatus']);
 
     // --- Stripe card payments (Visa / Mastercard) ---
+    Route::get('/stripe/config', [StripeController::class, 'config']);
+    Route::get('/payments/stripe/config', [StripeController::class, 'config']);
     Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
     Route::post('/stripe/checkout-session', [StripeController::class, 'createCheckoutSession']);
     Route::post('/stripe/confirm', [StripeController::class, 'confirm']);

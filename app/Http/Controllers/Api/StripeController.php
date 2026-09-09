@@ -27,6 +27,21 @@ class StripeController extends Controller
      * POST /api/stripe/payment-intent
      * Body: { amount, currency?, order_id, email? }
      */
+    public function config()
+    {
+        $publishableKey = config('stripe.key')
+            ?? config('services.stripe.key')
+            ?? env('STRIPE_KEY')
+            ?? env('STRIPE_PUBLISHABLE_KEY')
+            ?? env('STRIPE_TEST_PK');
+
+        return response()->json([
+            'publishableKey' => $publishableKey,
+            'key' => $publishableKey,
+            'publishable_key' => $publishableKey,
+        ]);
+    }
+
     public function createPaymentIntent(Request $request)
     {
         try {
@@ -37,7 +52,18 @@ class StripeController extends Controller
                 'email' => $request->input('email'),
             ]);
 
-            return $this->successResponse($intent);
+            $publishableKey = config('stripe.key')
+                ?? config('services.stripe.key')
+                ?? env('STRIPE_KEY')
+                ?? env('STRIPE_PUBLISHABLE_KEY')
+                ?? env('STRIPE_TEST_PK');
+
+            return $this->successResponse([
+                'publishableKey' => $publishableKey,
+                'key' => $publishableKey,
+                'publishable_key' => $publishableKey,
+                ...$intent,
+            ]);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 502);
         }
