@@ -54,6 +54,8 @@ class StripePaymentService
     {
         $amount = round((float) ($params['amount'] ?? 0), 2);
         $currency = strtolower($params['currency'] ?? 'usd');
+        $frontendBaseUrl = rtrim((string) config('app.frontend_url', env('FRONTEND_URL', 'http://localhost:3000')), '/');
+        $successUrl = $frontendBaseUrl . '/admin/payments/success?orderId=' . urlencode((string) ($params['order_id'] ?? ''));
 
         $form = [
             'mode' => 'payment',
@@ -64,6 +66,8 @@ class StripePaymentService
             'line_items[0][price_data][unit_amount]' => (int) round($amount * 100),
             'line_items[0][price_data][product_data][name]' => 'Restaurant order #' . ($params['order_id'] ?? ''),
             'payment_intent_data[metadata][order_id]' => (string) ($params['order_id'] ?? ''),
+            'return_url' => $successUrl,
+            'redirect_on_completion' => 'never',
         ];
 
         if (!empty($params['email'])) {
